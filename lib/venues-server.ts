@@ -1,5 +1,3 @@
-import { db } from '@/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import type { Venue } from '@/hooks/useVenues';
 
 export type { Venue };
@@ -14,9 +12,28 @@ const FALLBACK_VENUES: Venue[] = [
   { id: '6', title: 'Minimalist Daylight Studio', location: 'Williamsburg, Brooklyn', price: 120, rating: 4.6, reviews: 82, capacity: 30, imageUrl: 'https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=800&auto=format&fit=crop', isSuperhost: false },
 ];
 
+/**
+ * Dynamically import Firebase to avoid SSR issues at build time.
+ * Firebase client SDK uses browser globals — importing it at module level
+ * in a server component can crash during `next build`.
+ */
+async function getFirestoreDb() {
+  try {
+    const { db } = await import('@/firebase');
+    return db;
+  } catch (error) {
+    console.error('Could not load Firebase:', error);
+    return null;
+  }
+}
+
 /** Fetch all venues (Firestore + hardcoded fallbacks). One-time read, no listener. */
 export async function getVenues(): Promise<Venue[]> {
   try {
+    const db = await getFirestoreDb();
+    if (!db) return FALLBACK_VENUES;
+
+    const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
     const q = query(collection(db, 'venues'), orderBy('createdAt', 'desc'));
     const snapshot = await getDocs(q);
     const firestoreVenues = snapshot.docs.map((doc) => ({

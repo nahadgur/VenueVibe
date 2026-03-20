@@ -138,12 +138,13 @@ function HostContent() {
                       </button>
                       {menuOpen === venue.id && (
                         <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-[#E0D5C5] rounded-lg shadow-sm z-20 overflow-hidden">
-                          <button
-                            onClick={() => { setMenuOpen(null); }}
+                          <Link
+                            href={`/host/manage/${venue.id}/edit`}
+                            onClick={() => setMenuOpen(null)}
                             className="w-full flex items-center gap-2 px-4 py-2.5 text-[13px] text-[#5C4E3C] font-light hover:bg-[#F8F4EE] transition-colors text-left"
                           >
                             <Pencil className="w-3.5 h-3.5" />Edit listing
-                          </button>
+                          </Link>
                           <button
                             onClick={() => { setMenuOpen(null); handleDelete(venue.id); }}
                             className="w-full flex items-center gap-2 px-4 py-2.5 text-[13px] text-red-600 font-light hover:bg-red-50 transition-colors text-left"
