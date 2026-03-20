@@ -4,13 +4,14 @@ import HowItWorks from '@/components/HowItWorks';
 
 export default function HowItWorksPage() {
   return (
-    <main className="min-h-screen bg-[#050505] selection:bg-white/20">
+    <main className="min-h-screen bg-[#0F2618] selection:bg-[rgba(200,169,110,0.3)]">
       <Navbar />
-      <div className="pt-40 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <h1 className="text-5xl md:text-7xl font-display font-light text-white mb-6 tracking-tighter uppercase">
-          The <span className="italic text-white/60">Process</span>
+      <div className="pt-36 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        <p className="text-[#C8A96E] text-[11px] tracking-[0.25em] uppercase font-medium mb-4">Simple process</p>
+        <h1 className="text-4xl md:text-6xl font-display font-light text-[#E8DFC9] mb-4 tracking-tight">
+          How it <span className="italic text-[#C8A96E]">works</span>
         </h1>
-        <p className="text-white/50 text-sm tracking-[0.1em] uppercase max-w-2xl mx-auto leading-relaxed">
+        <p className="text-[#5A7A52] text-[15px] font-light max-w-xl mx-auto leading-relaxed">
           Everything you need to know about booking the perfect space.
         </p>
       </div>

@@ -24,11 +24,11 @@ export default function VenueSearch() {
       <div className="mb-12">
         <div className="relative max-w-2xl">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-white/40" />
+            <Search className="h-5 w-5 text-[#5A7A52]" />
           </div>
           <input
             type="text"
-            className="block w-full pl-12 pr-4 py-5 bg-transparent border-b border-white/20 text-white placeholder-white/40 focus:outline-none focus:border-white transition-colors text-lg font-light tracking-wide"
+            className="block w-full pl-12 pr-4 py-5 bg-transparent border-b border-[#2A4A2A] text-[#E8DFC9] placeholder-[#5A7A52]/60 focus:outline-none focus:border-[#C8A96E] transition-colors text-lg font-light"
             placeholder="Search by venue name or location..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -39,10 +39,10 @@ export default function VenueSearch() {
       {/* Results Grid */}
       {loading ? (
         <div className="flex justify-center py-32">
-          <Loader2 className="w-8 h-8 text-white/40 animate-spin" />
+          <Loader2 className="w-8 h-8 text-[#5A7A52] animate-spin" />
         </div>
       ) : filteredVenues.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredVenues.map((venue, index) => (
             <motion.div
               key={venue.id}
@@ -55,11 +55,11 @@ export default function VenueSearch() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-32 border-t border-white/10">
-          <p className="text-white/50 text-lg font-light tracking-wide">No venues found matching &quot;{searchQuery}&quot;.</p>
-          <button 
+        <div className="text-center py-32 border-t border-[#2A4A2A]">
+          <p className="text-[#5A7A52] text-lg font-light">No venues found matching &quot;{searchQuery}&quot;.</p>
+          <button
             onClick={() => setSearchQuery('')}
-            className="mt-6 text-[11px] uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors border-b border-white/20 pb-1"
+            className="mt-6 text-[13px] text-[#C8A96E] hover:text-[#D4B87A] transition-colors font-light border-b border-[#C8A96E]/30 pb-1"
           >
             Clear search
           </button>

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'motion/react';
-import { Star, MapPin, Users, Heart } from 'lucide-react';
+import { Star, MapPin, Heart } from 'lucide-react';
 import { useState } from 'react';
 
 interface VenueCardProps {
@@ -33,12 +33,12 @@ export default function VenueCard({
 
   return (
     <motion.div
-      className="group relative flex flex-col bg-transparent border-none rounded-none overflow-hidden cursor-pointer"
+      className="group relative flex flex-col bg-[#162816] border border-[#2A4A2A] rounded-xl overflow-hidden cursor-pointer hover:border-[#3A5A3A] transition-colors duration-500"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
       {/* Image Container */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-xl">
         <Image
           src={imageUrl}
           alt={title}
@@ -46,47 +46,49 @@ export default function VenueCard({
           className={`object-cover transition-transform duration-1000 ease-out ${isHovered ? 'scale-105' : 'scale-100'}`}
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-700" />
-        
-        {/* Badges */}
-        <div className="absolute top-6 left-6 flex flex-col gap-2">
-          {isSuperhost && (
-            <span className="px-4 py-1.5 border border-white/30 bg-black/40 backdrop-blur-md text-white text-[9px] font-semibold uppercase tracking-[0.2em] rounded-full">
-              Prestige
-            </span>
-          )}
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#162816] via-transparent to-transparent opacity-60" />
 
-        {/* Like Button */}
+        {/* Badge */}
+        {isSuperhost && (
+          <div className="absolute top-4 left-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-[#C8A96E]/15 text-[#C8A96E] border border-[#C8A96E]/25 backdrop-blur-sm">
+              <Star className="w-3 h-3 fill-[#C8A96E]" />
+              Curated
+            </span>
+          </div>
+        )}
+
+        {/* Heart */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             setIsLiked(!isLiked);
           }}
-          className="absolute top-6 right-6 p-2.5 rounded-full border border-white/30 bg-black/40 backdrop-blur-md hover:bg-white hover:text-black transition-all"
+          className="absolute top-4 right-4 p-2 rounded-full bg-[#1B2E1B]/50 border border-[#2A4A2A] backdrop-blur-sm hover:bg-[#C8A96E]/20 transition-all"
         >
-          <Heart className={`w-4 h-4 transition-colors ${isLiked ? 'fill-white text-white' : 'text-white'}`} />
+          <Heart className={`w-4 h-4 transition-colors ${isLiked ? 'fill-[#C8A96E] text-[#C8A96E]' : 'text-[#8FA882]'}`} />
         </button>
       </div>
 
       {/* Content */}
-      <div className="py-6 flex flex-col flex-grow">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-2xl font-display font-light text-white leading-tight group-hover:text-white/70 transition-colors">
-            {title}
-          </h3>
-          <div className="flex items-center gap-1.5 shrink-0 ml-4">
-            <span className="text-white text-sm font-light">{rating}</span>
-            <span className="text-white/40 text-[10px] uppercase tracking-widest">({reviews})</span>
-          </div>
+      <div className="p-5 flex flex-col flex-grow">
+        <h3 className="text-lg font-display font-normal text-[#E8DFC9] leading-snug mb-1.5 group-hover:text-[#C8A96E] transition-colors duration-300">
+          {title}
+        </h3>
+
+        <div className="flex items-center gap-1.5 mb-4">
+          <MapPin className="w-3 h-3 text-[#5A7A52]" />
+          <span className="text-[12px] text-[#5A7A52] font-light">{location}</span>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-          <div className="text-[10px] uppercase tracking-[0.2em] text-white/50">
-            {location}
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-[#2A4A2A]">
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 fill-[#C8A96E] text-[#C8A96E]" />
+            <span className="text-[13px] text-[#E8DFC9] font-light">{rating}</span>
+            <span className="text-[11px] text-[#5A7A52]">({reviews})</span>
           </div>
-          <div className="text-white font-light tracking-wide">
-            £{price} <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">/ hr</span>
+          <div className="text-[#C8A96E] font-display text-lg">
+            £{price} <span className="text-[11px] text-[#5A7A52] font-sans font-light">/ hr</span>
           </div>
         </div>
       </div>

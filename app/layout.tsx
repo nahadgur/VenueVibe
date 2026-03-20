@@ -1,28 +1,29 @@
 import type {Metadata} from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
-import './globals.css'; // Global styles
+import { Work_Sans, Cormorant_Garamond } from 'next/font/google';
+import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 
-const inter = Inter({
+const workSans = Work_Sans({
   subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
   variable: '--font-sans',
 });
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-display',
 });
 
 export const metadata: Metadata = {
-  title: 'VenueVibe | Prestige Spaces',
-  description: 'Exclusive venues for extraordinary events.',
+  title: 'VenueVibe | Spaces that breathe',
+  description: 'Curated venues for elevated occasions.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="font-sans antialiased bg-[#050505] text-white" suppressHydrationWarning>
+    <html lang="en" className={`${workSans.variable} ${cormorant.variable}`}>
+      <body className="font-sans antialiased bg-[#0F2618] text-[#E8DFC9]" suppressHydrationWarning>
         <AuthProvider>
           {children}
         </AuthProvider>

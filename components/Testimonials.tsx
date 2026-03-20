@@ -33,20 +33,20 @@ const TESTIMONIALS = [
 
 export default function Testimonials() {
   return (
-    <section className="py-32 bg-[#050505] relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      
+    <section className="py-28 bg-[#0F2618] relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#2A4A2A] to-transparent" />
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="max-w-2xl"
           >
-            <h2 className="text-5xl md:text-7xl font-display font-light text-white mb-6 tracking-tighter uppercase">
-              Voices of <span className="italic text-white/60">Prestige</span>
+            <p className="text-[#C8A96E] text-[11px] tracking-[0.25em] uppercase font-medium mb-4">Testimonials</p>
+            <h2 className="text-4xl md:text-6xl font-display font-light text-[#E8DFC9] tracking-tight">
+              Voices of <span className="italic text-[#C8A96E]">trust</span>
             </h2>
           </motion.div>
           <motion.div
@@ -55,31 +55,31 @@ export default function Testimonials() {
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <p className="text-white/50 text-sm tracking-[0.1em] uppercase max-w-sm leading-relaxed text-right">
-              Don&apos;t just take our word for it. Hear from the people who use VenueVibe to bring their visions to life.
+            <p className="text-[#5A7A52] text-[14px] font-light max-w-sm leading-relaxed md:text-right">
+              Don&apos;t just take our word for it. Hear from the people who bring their visions to life with VenueVibe.
             </p>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {TESTIMONIALS.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              className="bg-transparent border border-white/10 p-10 relative group hover:bg-white/5 transition-colors duration-500"
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              className="bg-[#162816] border border-[#2A4A2A] rounded-xl p-8 relative group hover:border-[#3A5A3A] transition-colors duration-500"
             >
-              <Quote className="absolute top-8 right-8 w-12 h-12 text-white/5 group-hover:text-white/10 transition-colors duration-500" />
-              
+              <Quote className="absolute top-6 right-6 w-10 h-10 text-[#C8A96E]/8 group-hover:text-[#C8A96E]/15 transition-colors duration-500" />
+
               <div className="flex flex-col h-full">
-                <p className="text-white/80 text-lg font-light leading-relaxed mb-12 italic relative z-10">
+                <p className="text-[#A8C49A] text-[15px] font-light leading-relaxed mb-10 italic font-display relative z-10">
                   &quot;{testimonial.quote}&quot;
                 </p>
-                
-                <div className="mt-auto flex items-center gap-4 pt-6 border-t border-white/10">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/20 grayscale group-hover:grayscale-0 transition-all duration-500">
+
+                <div className="mt-auto flex items-center gap-4 pt-5 border-t border-[#2A4A2A]">
+                  <div className="relative w-11 h-11 rounded-full overflow-hidden border border-[#2A4A2A] grayscale group-hover:grayscale-0 transition-all duration-500">
                     <Image
                       src={testimonial.avatar}
                       alt={testimonial.author}
@@ -89,8 +89,8 @@ export default function Testimonials() {
                     />
                   </div>
                   <div>
-                    <h4 className="text-white font-display font-light tracking-wide">{testimonial.author}</h4>
-                    <p className="text-white/40 text-[10px] uppercase tracking-[0.1em]">{testimonial.role}, {testimonial.company}</p>
+                    <h4 className="text-[#E8DFC9] font-display font-normal text-[15px]">{testimonial.author}</h4>
+                    <p className="text-[#5A7A52] text-[12px] font-light">{testimonial.role}, {testimonial.company}</p>
                   </div>
                 </div>
               </div>

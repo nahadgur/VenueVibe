@@ -1,2 +1,48 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@theme {
+  --color-forest-deep: #0F2618;
+  --color-forest: #1B2E1B;
+  --color-forest-card: #162816;
+  --color-forest-border: #2A4A2A;
+  --color-forest-border-hover: #3A5A3A;
+  --color-forest-muted: #5A7A52;
+  --color-leaf: #8FA882;
+  --color-leaf-light: #A8C49A;
+  --color-gold: #C8A96E;
+  --color-gold-hover: #D4B87A;
+  --color-gold-dim: rgba(200, 169, 110, 0.15);
+  --color-cream: #E8DFC9;
+  --color-cream-dim: rgba(232, 223, 201, 0.7);
+  --color-cream-faint: rgba(232, 223, 201, 0.4);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+/* Selection */
+::selection {
+  background: rgba(200, 169, 110, 0.3);
+  color: #E8DFC9;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0F2618;
+}
+::-webkit-scrollbar-thumb {
+  background: #2A4A2A;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3A5A3A;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
