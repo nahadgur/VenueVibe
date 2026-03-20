@@ -2,47 +2,44 @@
 @import "tw-animate-css";
 
 @theme {
-  --color-forest-deep: #0F2618;
-  --color-forest: #1B2E1B;
-  --color-forest-card: #162816;
-  --color-forest-border: #2A4A2A;
-  --color-forest-border-hover: #3A5A3A;
-  --color-forest-muted: #5A7A52;
-  --color-leaf: #8FA882;
-  --color-leaf-light: #A8C49A;
-  --color-gold: #C8A96E;
-  --color-gold-hover: #D4B87A;
-  --color-gold-dim: rgba(200, 169, 110, 0.15);
-  --color-cream: #E8DFC9;
-  --color-cream-dim: rgba(232, 223, 201, 0.7);
-  --color-cream-faint: rgba(232, 223, 201, 0.4);
+  --color-cream: #F5F0EA;
+  --color-sand: #EDE5D8;
+  --color-sand-dark: #E0D5C5;
+  --color-warm-border: #DDD4C6;
+  --color-warm-border-hover: #C4AE8F;
+  --color-warm-muted: #8C7B66;
+  --color-warm-secondary: #A69580;
+  --color-warm-text: #2C2418;
+  --color-warm-text-light: #5C4E3C;
+  --color-terracotta: #D4654A;
+  --color-terracotta-hover: #C05A42;
+  --color-terracotta-dim: rgba(212, 101, 74, 0.08);
+  --color-card: #FFFFFF;
+  --color-card-hover: #F8F4EE;
 
   --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
+  --font-display: Georgia, 'Times New Roman', serif;
 }
 
-/* Selection */
 ::selection {
-  background: rgba(200, 169, 110, 0.3);
-  color: #E8DFC9;
+  background: rgba(212, 101, 74, 0.2);
+  color: #2C2418;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0F2618;
+  background: #F5F0EA;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2A4A2A;
+  background: #DDD4C6;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3A5A3A;
+  background: #C4AE8F;
 }
 
-/* Smooth scroll */
 html {
   scroll-behavior: smooth;
 }

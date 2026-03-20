@@ -4,11 +4,8 @@ import HowItWorks from '@/components/HowItWorks';
 
 export default function HowItWorksPage() {
   return (
-    <main className="min-h-screen bg-[#0F2618] selection:bg-[rgba(200,169,110,0.3)]">
-      <Navbar />
-      <div className="pt-20" />
-      <HowItWorks />
-      <Footer />
+    <main className="min-h-screen bg-[#F5F0EA] selection:bg-[rgba(212,101,74,0.2)]">
+      <Navbar /><div className="pt-20" /><HowItWorks /><Footer />
     </main>
   );
 }

@@ -1,29 +1,23 @@
 import type {Metadata} from 'next';
-import { Work_Sans, Cormorant_Garamond } from 'next/font/google';
+import { DM_Sans } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
 
-const workSans = Work_Sans({
+const dmSans = DM_Sans({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600'],
   variable: '--font-sans',
 });
 
-const cormorant = Cormorant_Garamond({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-display',
-});
-
 export const metadata: Metadata = {
-  title: 'VenueVibe | Spaces that breathe',
-  description: 'Curated venues for elevated occasions.',
+  title: 'VenueVibe | Find your perfect space',
+  description: 'Thoughtfully curated venues for moments that matter.',
 };
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   return (
-    <html lang="en" className={`${workSans.variable} ${cormorant.variable}`}>
-      <body className="font-sans antialiased bg-[#0F2618] text-[#E8DFC9]" suppressHydrationWarning>
+    <html lang="en" className={dmSans.variable}>
+      <body className="font-sans antialiased bg-[#F5F0EA] text-[#2C2418]" suppressHydrationWarning>
         <AuthProvider>
           {children}
         </AuthProvider>
