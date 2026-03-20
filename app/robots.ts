@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/list-venue'],
+        disallow: ['/api/', '/dashboard', '/host/', '/list-venue'],
       },
     ],
     sitemap: 'https://venuevibe.com/sitemap.xml',
