@@ -11,7 +11,7 @@ export default function Hero() {
   const [guests, setGuests] = useState('');
 
   return (
-    <div className="relative min-h-[92vh] flex items-center justify-center overflow-hidden pt-20 bg-[#EDE5D8]">
+    <div className="relative min-h-[90vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden pt-20 bg-[#EDE5D8]">
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-[#EDE5D8] via-transparent to-[#EDE5D8]" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#D4654A]/5 rounded-full blur-[150px] pointer-events-none" />
@@ -53,9 +53,9 @@ export default function Hero() {
                 </div>
               </div>
               <div className="w-full md:w-auto p-2 shrink-0">
-                <Link href="/venues" className="w-full h-14 md:h-14 md:w-14 flex items-center justify-center gap-2 bg-[#2C2418] text-[#F5F0EA] rounded-xl hover:bg-[#3D3226] transition-all">
+                <Link href="/venues" className="w-full h-12 md:h-14 md:w-14 flex items-center justify-center gap-2 bg-[#2C2418] text-[#F5F0EA] rounded-xl hover:bg-[#3D3226] transition-all active:scale-[0.98]">
                   <Search className="w-5 h-5" />
-                  <span className="md:hidden text-[12px] font-medium">Search spaces</span>
+                  <span className="md:hidden text-[13px] font-medium">Search spaces</span>
                 </Link>
               </div>
             </div>

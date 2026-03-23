@@ -26,7 +26,7 @@ export default function VenueCard({ id, title, location, price, rating = 0, revi
   return (
     <Link href={`/venue/${id}`}>
       <motion.div className="group relative flex flex-col bg-white border border-[#E0D5C5] rounded-xl overflow-hidden cursor-pointer hover:border-[#C4AE8F] hover:shadow-sm transition-all duration-500" onHoverStart={() => setIsHovered(true)} onHoverEnd={() => setIsHovered(false)}>
-        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-xl">
+        <div className="relative aspect-[4/3] sm:aspect-[4/5] w-full overflow-hidden rounded-t-xl">
           <Image src={imageUrl} alt={`${title} — venue space in ${location}`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" priority={priority} loading={priority ? 'eager' : 'lazy'} quality={75} className={`object-cover transition-transform duration-1000 ease-out ${isHovered ? 'scale-105' : 'scale-100'}`} referrerPolicy="no-referrer" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           {isSuperhost && (
@@ -36,7 +36,7 @@ export default function VenueCard({ id, title, location, price, rating = 0, revi
               </span>
             </div>
           )}
-          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsLiked(!isLiked); }} className="absolute top-4 right-4 p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all">
+          <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setIsLiked(!isLiked); }} className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2.5 sm:p-2 rounded-full bg-white/80 backdrop-blur-sm hover:bg-white transition-all min-w-[44px] min-h-[44px] flex items-center justify-center">
             <Heart className={`w-4 h-4 transition-colors ${isLiked ? 'fill-[#D4654A] text-[#D4654A]' : 'text-[#8C7B66]'}`} />
           </button>
         </div>

@@ -5,9 +5,9 @@ export default function Footer() {
   return (
     <footer className="bg-[#2C2418] border-t border-[#3D3226] pt-20 pb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-14 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-10 sm:gap-14 mb-16">
           {/* Brand */}
-          <div className="space-y-6">
+          <div className="space-y-6 col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2">
               <span className="text-[#F5F0EA] font-[Georgia,serif] text-xl tracking-tight">VenueVibe</span>
             </Link>

@@ -197,7 +197,7 @@ function EditContent() {
             <textarea value={formData.description} onChange={(e) => update('description', e.target.value)} rows={5} className="w-full bg-[#F8F4EE] border border-[#E0D5C5] rounded-lg p-4 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors resize-none" placeholder="Describe what makes your space unique..." />
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Capacity</label>
               <div className="relative">

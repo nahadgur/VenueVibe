@@ -91,12 +91,12 @@ function ConfirmationContent() {
         {/* Details grid */}
         <div className="grid grid-cols-2 gap-px bg-[#E0D5C5]">
           {[
-            { icon: Calendar, label: 'Date', value: new Date(booking.date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) },
+            { icon: Calendar, label: 'Date', value: new Date(booking.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) },
             { icon: Clock, label: 'Time', value: booking.time },
             { icon: Users, label: 'Guests', value: `${booking.guests} people` },
             { icon: Clock, label: 'Duration', value: `${booking.hours} hours` },
           ].map((item) => (
-            <div key={item.label} className="bg-white p-5">
+            <div key={item.label} className="bg-white p-4 sm:p-5">
               <div className="flex items-center gap-2 mb-1">
                 <item.icon className="w-3.5 h-3.5 text-[#A69580]" />
                 <span className="text-[11px] text-[#A69580] tracking-[0.05em]">{item.label}</span>

@@ -51,7 +51,7 @@ export default function CookieBanner() {
   if (state !== 'undecided') return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[70] p-4 sm:p-6">
+    <div className="fixed bottom-0 left-0 right-0 z-[70] p-4 sm:p-6 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
       <div className="max-w-2xl mx-auto bg-white border border-[#E0D5C5] rounded-2xl shadow-lg overflow-hidden">
         {!showCustom ? (
           // ── Main banner ──

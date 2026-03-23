@@ -42,10 +42,10 @@ export default async function FeaturedVenues() {
         {featured && (
           <div className="mb-12 group">
             <div className="grid grid-cols-1 md:grid-cols-2 bg-white border border-[#E0D5C5] rounded-xl overflow-hidden hover:border-[#C4AE8F] hover:shadow-sm transition-all duration-500 cursor-pointer">
-              <div className="relative min-h-[280px] md:min-h-[380px] overflow-hidden">
+              <div className="relative min-h-[220px] sm:min-h-[280px] md:min-h-[380px] overflow-hidden">
                 <Image src={featured.imageUrl} alt={`${featured.title} — featured venue`} fill sizes="(max-width: 768px) 100vw, 50vw" priority quality={80} className="object-cover group-hover:scale-105 transition-transform duration-1000" referrerPolicy="no-referrer" />
               </div>
-              <div className="p-8 md:p-12 flex flex-col justify-center">
+              <div className="p-6 sm:p-8 md:p-12 flex flex-col justify-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-[#D4654A]/8 text-[#D4654A] border border-[#D4654A]/15 w-fit mb-6">
                   <Star className="w-3 h-3 fill-[#D4654A]" />Featured space
                 </span>
@@ -55,9 +55,9 @@ export default async function FeaturedVenues() {
                   <div className="flex items-center gap-2 text-[13px] text-[#8C7B66]"><Users className="w-4 h-4" />Up to {featured.capacity}</div>
                   <div className="flex items-center gap-2 text-[13px] text-[#8C7B66]"><MapPin className="w-4 h-4" />{featured.location}</div>
                 </div>
-                <div className="flex items-center justify-between pt-6 border-t border-[#E0D5C5]">
-                  <span className="font-[Georgia,serif] text-2xl text-[#2C2418]">£{featured.price} <span className="text-[12px] text-[#A69580] font-sans font-light">/ hr</span></span>
-                  <span className="px-6 py-2.5 rounded-lg bg-[#2C2418] text-[#F5F0EA] text-[13px] font-medium hover:bg-[#3D3226] transition-colors">View space</span>
+                <div className="flex items-center justify-between pt-6 border-t border-[#E0D5C5] gap-4">
+                  <span className="font-[Georgia,serif] text-xl sm:text-2xl text-[#2C2418]">£{featured.price} <span className="text-[12px] text-[#A69580] font-sans font-light">/ hr</span></span>
+                  <span className="px-5 sm:px-6 py-2.5 rounded-lg bg-[#2C2418] text-[#F5F0EA] text-[12px] sm:text-[13px] font-medium hover:bg-[#3D3226] transition-colors shrink-0">View space</span>
                 </div>
               </div>
             </div>

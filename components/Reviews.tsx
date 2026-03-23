@@ -28,7 +28,7 @@ function StarInput({ rating, onChange }: { rating: number; onChange: (r: number)
   const [hover, setHover] = useState(0);
 
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-0.5">
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
@@ -36,10 +36,10 @@ function StarInput({ rating, onChange }: { rating: number; onChange: (r: number)
           onClick={() => onChange(star)}
           onMouseEnter={() => setHover(star)}
           onMouseLeave={() => setHover(0)}
-          className="p-0.5 transition-colors"
+          className="p-2 transition-colors"
         >
           <Star
-            className={`w-5 h-5 transition-colors ${
+            className={`w-6 h-6 sm:w-5 sm:h-5 transition-colors ${
               star <= (hover || rating)
                 ? 'fill-[#D4654A] text-[#D4654A]'
                 : 'text-[#E0D5C5]'

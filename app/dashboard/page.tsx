@@ -66,8 +66,8 @@ function DashboardContent() {
           </div>
         )}
         <div>
-          <h1 className="text-2xl font-[Georgia,serif] font-normal text-[#2C2418]">Welcome back, {user?.displayName?.split(' ')[0]}</h1>
-          <p className="text-[13px] text-[#A69580] font-light">Manage your inquiries, reviews, and saved venues.</p>
+          <h1 className="text-xl sm:text-2xl font-[Georgia,serif] font-normal text-[#2C2418]">Welcome back, {user?.displayName?.split(' ')[0]}</h1>
+          <p className="text-[12px] sm:text-[13px] text-[#A69580] font-light">Manage your inquiries, reviews, and saved venues.</p>
         </div>
       </div>
 

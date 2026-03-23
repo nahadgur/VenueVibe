@@ -41,19 +41,19 @@ export default function ListVenueWizard() {
   }
 
   return (
-    <div className="bg-white border border-[#E0D5C5] rounded-xl p-8 md:p-12 overflow-hidden relative">
+    <div className="bg-white border border-[#E0D5C5] rounded-xl p-5 sm:p-8 md:p-12 overflow-hidden relative">
       <div className="mb-12">
-        <div className="flex justify-between text-[11px] text-[#A69580] mb-5">
-          <span className={step >= 1 ? 'text-[#2C2418] transition-colors' : ''}>1. Space details</span>
-          <span className={step >= 2 ? 'text-[#2C2418] transition-colors' : ''}>2. Pricing & capacity</span>
-          <span className={step >= 3 ? 'text-[#2C2418] transition-colors' : ''}>3. Features & photos</span>
+        <div className="flex justify-between text-[10px] sm:text-[11px] text-[#A69580] mb-5 gap-2">
+          <span className={`text-center flex-1 ${step >= 1 ? 'text-[#2C2418] transition-colors' : ''}`}>1. Details</span>
+          <span className={`text-center flex-1 ${step >= 2 ? 'text-[#2C2418] transition-colors' : ''}`}>2. Pricing</span>
+          <span className={`text-center flex-1 ${step >= 3 ? 'text-[#2C2418] transition-colors' : ''}`}>3. Features</span>
         </div>
         <div className="h-px bg-[#E0D5C5] w-full relative">
           <motion.div className="absolute top-0 left-0 h-full bg-[#D4654A]" initial={{ width: '33%' }} animate={{ width: `${(step / 3) * 100}%` }} transition={{ duration: 0.6, ease: "easeInOut" }} />
         </div>
       </div>
 
-      <div className="relative min-h-[420px]">
+      <div className="relative min-h-[320px] sm:min-h-[420px]">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="space-y-6">

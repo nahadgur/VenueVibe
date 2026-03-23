@@ -75,7 +75,7 @@ export default function Navbar() {
           </div>
 
           <div className="md:hidden flex items-center">
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 rounded-md text-[#8C7B66] hover:text-[#2C2418] hover:bg-[#EDE5D8] focus:outline-none">
+            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2.5 rounded-md text-[#8C7B66] hover:text-[#2C2418] hover:bg-[#EDE5D8] focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center">
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>

@@ -141,7 +141,11 @@ export default function MobileFilters({ onFilterChange }: FiltersProps) {
           />
 
           {/* Sheet */}
-          <div className="fixed inset-x-0 bottom-0 md:inset-y-0 md:left-auto md:right-0 md:w-[420px] z-[90] bg-[#F5F0EA] rounded-t-2xl md:rounded-none shadow-xl max-h-[85vh] md:max-h-none flex flex-col">
+          <div className="fixed inset-x-0 bottom-0 md:inset-y-0 md:left-auto md:right-0 md:w-[420px] z-[90] bg-[#F5F0EA] rounded-t-2xl md:rounded-none shadow-xl max-h-[85vh] md:max-h-none flex flex-col pb-[env(safe-area-inset-bottom)]">
+            {/* Drag handle for mobile */}
+            <div className="flex justify-center pt-3 pb-1 md:hidden">
+              <div className="w-10 h-1 rounded-full bg-[#E0D5C5]" />
+            </div>
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E0D5C5] shrink-0">
               <h2 className="text-[16px] font-[Georgia,serif] text-[#2C2418]">Filters</h2>
@@ -245,7 +249,7 @@ export default function MobileFilters({ onFilterChange }: FiltersProps) {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 border-t border-[#E0D5C5] shrink-0">
+            <div className="px-6 py-4 border-t border-[#E0D5C5] shrink-0 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
               <button
                 onClick={applyFilters}
                 className="w-full py-3.5 bg-[#2C2418] text-[#F5F0EA] text-[13px] font-medium rounded-lg hover:bg-[#3D3226] transition-colors"

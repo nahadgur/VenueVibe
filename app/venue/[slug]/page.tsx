@@ -7,6 +7,7 @@ import SchemaScript from '@/components/SchemaScript';
 import ImageGallery from '@/components/ImageGallery';
 import TrustBadges from '@/components/TrustBadges';
 import InquiryForm from '@/components/InquiryForm';
+import MobileCTA from '@/components/MobileCTA';
 import Reviews from '@/components/Reviews';
 import { getVenueById, getVenues } from '@/lib/venues-server';
 import { generateVenueSchema } from '@/lib/schema';
@@ -72,7 +73,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
       <SchemaScript data={venueSchema} />
       <Navbar />
 
-      <div className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <div className="pt-28 pb-32 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <Breadcrumbs items={crumbs} />
 
         {/* ── Gallery ── */}
@@ -179,7 +180,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
 
           {/* ── Right: Sticky Inquiry ── */}
           <div className="lg:col-span-1">
-            <div className="lg:sticky lg:top-28 space-y-6">
+            <div id="inquiry-form" className="lg:sticky lg:top-28 space-y-6">
               <InquiryForm
                 venueTitle={venue.title}
                 venueId={venue.id}
@@ -192,6 +193,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
           </div>
         </div>
       </div>
+      <MobileCTA price={venue.price} />
       <Footer />
     </main>
   );
