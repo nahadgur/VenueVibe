@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Search, Loader2 } from 'lucide-react';
 import VenueCard from './VenueCard';
@@ -8,6 +9,7 @@ import MobileFilters, { type FilterState } from './MobileFilters';
 import { useVenues } from '@/hooks/useVenues';
 
 export default function VenueSearch() {
+  const searchParams = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     priceRange: [0, 1000],
@@ -18,12 +20,29 @@ export default function VenueSearch() {
     venueTypes: [],
     sortBy: 'relevance',
   });
+
+  // Read query params from Hero search on mount
+  useEffect(() => {
+    const q = searchParams.get('q');
+    const event = searchParams.get('event');
+    const guests = searchParams.get('guests');
+
+    if (q) setSearchQuery(q);
+    if (event || guests) {
+      setFilters(prev => ({
+        ...prev,
+        ...(guests ? { capacityMin: 0 } : {}),
+      }));
+    }
+  }, [searchParams]);
   const { venues, loading } = useVenues();
+
+  const eventParam = searchParams.get('event')?.toLowerCase() || '';
 
   const filteredVenues = venues
     .filter((venue) => {
       const query = searchQuery.toLowerCase();
-      const matchesSearch =
+      const matchesSearch = !query ||
         venue.title.toLowerCase().includes(query) ||
         venue.location.toLowerCase().includes(query) ||
         (venue.area || '').toLowerCase().includes(query) ||
@@ -36,8 +55,14 @@ export default function VenueSearch() {
         filters.vibeTags.some(tag => (venue.vibeTags || []).includes(tag as any));
       const matchesVenueType = filters.venueTypes.length === 0 ||
         filters.venueTypes.some(vt => (venue.venueType || '').toLowerCase().includes(vt.toLowerCase()));
+      // Match event param from Hero search against event types, vibe tags, venue type, and title
+      const matchesEventParam = !eventParam ||
+        (venue.eventTypesSupported || []).some(et => et.toLowerCase().includes(eventParam)) ||
+        (venue.vibeTags || []).some(vt => vt.toLowerCase().includes(eventParam)) ||
+        (venue.venueType || '').toLowerCase().includes(eventParam) ||
+        venue.title.toLowerCase().includes(eventParam);
 
-      return matchesSearch && matchesPrice && matchesCapacity && matchesVibe && matchesVenueType;
+      return matchesSearch && matchesPrice && matchesCapacity && matchesVibe && matchesVenueType && matchesEventParam;
     })
     .sort((a, b) => {
       switch (filters.sortBy) {

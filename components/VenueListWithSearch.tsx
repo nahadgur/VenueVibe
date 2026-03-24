@@ -1,0 +1,26 @@
+'use client';
+
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+import VenueSearch from './VenueSearch';
+import VenueGrid from './VenueGrid';
+import type { Venue } from '@/lib/types';
+
+function SearchAwareContent({ venues, priorityCount }: { venues: Venue[]; priorityCount: number }) {
+  const searchParams = useSearchParams();
+  const hasParams = searchParams.get('q') || searchParams.get('event') || searchParams.get('guests');
+
+  if (hasParams) {
+    return <VenueSearch />;
+  }
+
+  return <VenueGrid venues={venues} priorityCount={priorityCount} />;
+}
+
+export default function VenueListWithSearch({ venues, priorityCount = 3 }: { venues: Venue[]; priorityCount?: number }) {
+  return (
+    <Suspense fallback={<VenueGrid venues={venues} priorityCount={priorityCount} />}>
+      <SearchAwareContent venues={venues} priorityCount={priorityCount} />
+    </Suspense>
+  );
+}

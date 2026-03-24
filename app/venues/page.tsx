@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, MapPin } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import VenueGrid from '@/components/VenueGrid';
+import VenueListWithSearch from '@/components/VenueListWithSearch';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SchemaScript from '@/components/SchemaScript';
 import { getHubCities, EVENT_TYPES, buildBreadcrumbs } from '@/lib/locations';
@@ -27,7 +27,7 @@ export default async function VenuesPage() {
         <p className="text-[#D4654A] text-[11px] tracking-[0.25em] uppercase font-medium mb-4">Browse</p>
         <h1 className="text-4xl md:text-6xl font-[Georgia,serif] font-normal text-[#2C2418] mb-4 tracking-tight">Curated <span className="italic text-[#8C7B66]">spaces</span></h1>
         <p className="text-[#8C7B66] text-[15px] font-light max-w-xl mb-14 leading-relaxed">Discover our full collection of unique spaces for your next event.</p>
-        <VenueGrid venues={venues} priorityCount={3} />
+        <VenueListWithSearch venues={venues} priorityCount={3} />
 
         <section className="mt-24">
           <h2 className="text-2xl md:text-3xl font-[Georgia,serif] font-normal text-[#2C2418] mb-3 tracking-tight">Venues by <span className="italic text-[#8C7B66]">city</span></h2>

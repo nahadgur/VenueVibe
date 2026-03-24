@@ -1,14 +1,37 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Search } from 'lucide-react';
-import Link from 'next/link';
 
 export default function Hero() {
+  const router = useRouter();
   const [location, setLocation] = useState('');
   const [eventType, setEventType] = useState('');
   const [guests, setGuests] = useState('');
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    if (location.trim()) params.set('q', location.trim());
+    if (eventType.trim()) params.set('event', eventType.trim());
+    if (guests.trim()) params.set('guests', guests.trim());
+    const qs = params.toString();
+    router.push(`/venues${qs ? `?${qs}` : ''}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSearch();
+  };
+
+  const handleTagClick = (tag: string) => {
+    setEventType(tag);
+    const params = new URLSearchParams();
+    if (location.trim()) params.set('q', location.trim());
+    params.set('event', tag);
+    if (guests.trim()) params.set('guests', guests.trim());
+    router.push(`/venues?${params.toString()}`);
+  };
 
   return (
     <div className="relative min-h-[90vh] sm:min-h-[92vh] flex items-center justify-center overflow-hidden pt-20 bg-[#EDE5D8]">
@@ -37,26 +60,26 @@ export default function Hero() {
               <div className="w-full md:w-[34%] flex items-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#E0D5C5] hover:bg-[#F8F4EE] transition-colors cursor-text" onClick={() => document.getElementById('location-input')?.focus()}>
                 <div className="ml-2 flex-1 min-w-0">
                   <label className="block text-[10px] font-medium text-[#A69580] tracking-[0.1em] mb-1 cursor-text">Location</label>
-                  <input id="location-input" type="text" placeholder="City or region" className="w-full bg-transparent border-none p-0 focus:ring-0 text-[#2C2418] placeholder-[#C4AE8F] text-sm outline-none truncate font-light" value={location} onChange={(e) => setLocation(e.target.value)} />
+                  <input id="location-input" type="text" placeholder="City or region" className="w-full bg-transparent border-none p-0 focus:ring-0 text-[#2C2418] placeholder-[#C4AE8F] text-sm outline-none truncate font-light" value={location} onChange={(e) => setLocation(e.target.value)} onKeyDown={handleKeyDown} />
                 </div>
               </div>
               <div className="w-full md:w-[36%] flex items-center px-5 py-4 border-b md:border-b-0 md:border-r border-[#E0D5C5] hover:bg-[#F8F4EE] transition-colors cursor-text" onClick={() => document.getElementById('event-input')?.focus()}>
                 <div className="ml-2 flex-1 min-w-0">
                   <label className="block text-[10px] font-medium text-[#A69580] tracking-[0.1em] mb-1 cursor-text">Event type</label>
-                  <input id="event-input" type="text" placeholder="Wedding, exhibition..." className="w-full bg-transparent border-none p-0 focus:ring-0 text-[#2C2418] placeholder-[#C4AE8F] text-sm outline-none truncate font-light" value={eventType} onChange={(e) => setEventType(e.target.value)} />
+                  <input id="event-input" type="text" placeholder="Wedding, exhibition..." className="w-full bg-transparent border-none p-0 focus:ring-0 text-[#2C2418] placeholder-[#C4AE8F] text-sm outline-none truncate font-light" value={eventType} onChange={(e) => setEventType(e.target.value)} onKeyDown={handleKeyDown} />
                 </div>
               </div>
               <div className="w-full md:w-[22%] flex items-center px-5 py-4 hover:bg-[#F8F4EE] transition-colors cursor-text" onClick={() => document.getElementById('guests-input')?.focus()}>
                 <div className="ml-2 flex-1 min-w-0">
                   <label className="block text-[10px] font-medium text-[#A69580] tracking-[0.1em] mb-1 cursor-text">Guests</label>
-                  <input id="guests-input" type="text" inputMode="numeric" pattern="[0-9]*" placeholder="Count" className="w-full bg-transparent border-none p-0 focus:ring-0 text-[#2C2418] placeholder-[#C4AE8F] text-sm outline-none truncate font-light" value={guests} onChange={(e) => setGuests(e.target.value)} />
+                  <input id="guests-input" type="text" inputMode="numeric" pattern="[0-9]*" placeholder="Count" className="w-full bg-transparent border-none p-0 focus:ring-0 text-[#2C2418] placeholder-[#C4AE8F] text-sm outline-none truncate font-light" value={guests} onChange={(e) => setGuests(e.target.value)} onKeyDown={handleKeyDown} />
                 </div>
               </div>
               <div className="w-full md:w-auto p-2 shrink-0">
-                <Link href="/venues" className="w-full h-12 md:h-14 md:w-14 flex items-center justify-center gap-2 bg-[#2C2418] text-[#F5F0EA] rounded-xl hover:bg-[#3D3226] transition-all active:scale-[0.98]">
+                <button onClick={handleSearch} className="w-full h-12 md:h-14 md:w-14 flex items-center justify-center gap-2 bg-[#2C2418] text-[#F5F0EA] rounded-xl hover:bg-[#3D3226] transition-all active:scale-[0.98]">
                   <Search className="w-5 h-5" />
                   <span className="md:hidden text-[13px] font-medium">Search spaces</span>
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -65,7 +88,7 @@ export default function Hero() {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.7 }} className="mt-8 flex flex-wrap justify-center gap-3">
           <span className="text-[#A69580] text-[11px] tracking-wider py-1.5 font-light">Trending:</span>
           {['Garden', 'Studio', 'Terrace', 'Glasshouse'].map((tag) => (
-            <button key={tag} onClick={() => setEventType(tag)} className="px-4 py-1.5 rounded-full border border-[#E0D5C5] bg-white text-[#8C7B66] text-[11px] tracking-wide font-light hover:bg-[#2C2418] hover:text-[#F5F0EA] hover:border-[#2C2418] transition-all duration-300">
+            <button key={tag} onClick={() => handleTagClick(tag)} className="px-4 py-1.5 rounded-full border border-[#E0D5C5] bg-white text-[#8C7B66] text-[11px] tracking-wide font-light hover:bg-[#2C2418] hover:text-[#F5F0EA] hover:border-[#2C2418] transition-all duration-300">
               {tag}
             </button>
           ))}
