@@ -9,7 +9,7 @@
 //   - WebSite: site-level search action
 // ============================================================
 
-import type { Venue } from '@/hooks/useVenues';
+import type { Venue } from '@/lib/types';
 
 const SITE_URL = 'https://venuevibe.com';
 

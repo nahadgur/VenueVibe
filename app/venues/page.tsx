@@ -6,6 +6,7 @@ import VenueGrid from '@/components/VenueGrid';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import SchemaScript from '@/components/SchemaScript';
 import { getHubCities, EVENT_TYPES, buildBreadcrumbs } from '@/lib/locations';
+import { VENUE_TYPES } from '@/lib/types';
 import { getVenues } from '@/lib/venues-server';
 import { generateVenueListSchema } from '@/lib/schema';
 
@@ -54,6 +55,18 @@ export default async function VenuesPage() {
               <Link key={et.slug} href={`/venues/london/${et.slug}`} className="group bg-white border border-[#E0D5C5] rounded-xl p-6 hover:border-[#C4AE8F] hover:shadow-sm transition-all duration-300">
                 <h3 className="font-[Georgia,serif] text-[16px] text-[#2C2418] mb-2 group-hover:text-[#D4654A] transition-colors">{et.name}</h3>
                 <p className="text-[12px] text-[#A69580] font-light leading-relaxed line-clamp-2">{et.description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-24">
+          <h2 className="text-2xl md:text-3xl font-[Georgia,serif] font-normal text-[#2C2418] mb-3 tracking-tight">Venues by <span className="italic text-[#8C7B66]">type</span></h2>
+          <p className="text-[#8C7B66] text-[14px] font-light mb-10 max-w-lg">Know the kind of space you need? Browse by venue type.</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {VENUE_TYPES.map((vt) => (
+              <Link key={vt.slug} href={`/venue-types/${vt.slug}`} className="group flex items-center gap-3 bg-white border border-[#E0D5C5] rounded-xl px-5 py-4 hover:border-[#D4654A]/30 hover:shadow-sm transition-all duration-300">
+                <span className="text-[13px] font-light text-[#8C7B66] group-hover:text-[#2C2418] transition-colors">{vt.name}</span>
               </Link>
             ))}
           </div>

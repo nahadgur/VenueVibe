@@ -12,16 +12,21 @@ export interface FilterState {
   capacityMin: number;
   eventTypes: string[];
   amenities: string[];
-  sortBy: 'relevance' | 'price-low' | 'price-high' | 'rating';
+  vibeTags: string[];
+  venueTypes: string[];
+  sortBy: 'relevance' | 'price-low' | 'price-high' | 'rating' | 'response-time';
 }
 
-const EVENT_TYPE_OPTIONS = ['Corporate', 'Wedding', 'Photo Shoot', 'Workshop', 'Private Dining', 'Exhibition', 'Conference', 'Party'];
-const AMENITY_OPTIONS = ['WiFi', 'Parking', 'Kitchen', 'Natural Light', 'AV Equipment', 'Outdoor Area', 'Wheelchair Access', 'Air Con'];
+const EVENT_TYPE_OPTIONS = ['Corporate', 'Wedding', 'Photo Shoot', 'Workshop', 'Private Dining', 'Exhibition', 'Conference', 'Party', 'Birthday', 'Film/TV', 'Team Offsite', 'Networking'];
+const AMENITY_OPTIONS = ['WiFi', 'Parking', 'Kitchen', 'Natural Light', 'Sound System', 'Outdoor Area', 'Wheelchair Accessible', 'Air Conditioning', 'Catering Available', 'BYO Allowed', 'Late Licence', 'Projector'];
+const VIBE_OPTIONS = ['Industrial', 'Intimate', 'Grand', 'Bohemian', 'Minimalist', 'Rustic', 'Contemporary', 'Heritage', 'Rooftop', 'Waterside', 'Creative', 'Elegant'];
+const VENUE_TYPE_OPTIONS = ['Restaurant', 'Bar & Pub', 'Hotel', 'Warehouse', 'Loft', 'Studio', 'Gallery', 'Garden & Outdoor', 'Rooftop', 'Manor House', 'Barn', 'Theatre'];
 const SORT_OPTIONS = [
   { value: 'relevance' as const, label: 'Relevance' },
   { value: 'price-low' as const, label: 'Price: low to high' },
   { value: 'price-high' as const, label: 'Price: high to low' },
   { value: 'rating' as const, label: 'Highest rated' },
+  { value: 'response-time' as const, label: 'Fastest response' },
 ];
 
 const DEFAULT_FILTERS: FilterState = {
@@ -29,6 +34,8 @@ const DEFAULT_FILTERS: FilterState = {
   capacityMin: 0,
   eventTypes: [],
   amenities: [],
+  vibeTags: [],
+  venueTypes: [],
   sortBy: 'relevance',
 };
 
@@ -40,6 +47,8 @@ export default function MobileFilters({ onFilterChange }: FiltersProps) {
   const activeCount = [
     filters.eventTypes.length > 0,
     filters.amenities.length > 0,
+    filters.vibeTags.length > 0,
+    filters.venueTypes.length > 0,
     filters.priceRange[1] < 1000,
     filters.capacityMin > 0,
     filters.sortBy !== 'relevance',
@@ -242,6 +251,46 @@ export default function MobileFilters({ onFilterChange }: FiltersProps) {
                       }`}
                     >
                       {amenity}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Vibe */}
+              <div>
+                <label className="block text-[13px] font-medium text-[#2C2418] mb-3">Vibe</label>
+                <div className="flex gap-2 flex-wrap">
+                  {VIBE_OPTIONS.map((vibe) => (
+                    <button
+                      key={vibe}
+                      onClick={() => toggleChip(tempFilters.vibeTags, vibe, (val) => setTempFilters({ ...tempFilters, vibeTags: val }))}
+                      className={`px-4 py-2.5 rounded-lg border text-[13px] font-light transition-all ${
+                        tempFilters.vibeTags.includes(vibe)
+                          ? 'bg-[#D4654A] text-white border-[#D4654A]'
+                          : 'bg-white text-[#8C7B66] border-[#E0D5C5]'
+                      }`}
+                    >
+                      {vibe}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Venue type */}
+              <div>
+                <label className="block text-[13px] font-medium text-[#2C2418] mb-3">Venue type</label>
+                <div className="flex gap-2 flex-wrap">
+                  {VENUE_TYPE_OPTIONS.map((vt) => (
+                    <button
+                      key={vt}
+                      onClick={() => toggleChip(tempFilters.venueTypes, vt, (val) => setTempFilters({ ...tempFilters, venueTypes: val }))}
+                      className={`px-4 py-2.5 rounded-lg border text-[13px] font-light transition-all ${
+                        tempFilters.venueTypes.includes(vt)
+                          ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]'
+                          : 'bg-white text-[#8C7B66] border-[#E0D5C5]'
+                      }`}
+                    >
+                      {vt}
                     </button>
                   ))}
                 </div>

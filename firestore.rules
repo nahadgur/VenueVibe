@@ -73,13 +73,58 @@ service cloud.firestore {
       allow read: if true;
       
       // Only authenticated users can create venues, and they must set themselves as the host
-      allow create: if isAuthenticated() && isValidVenue(request.resource.data) && request.resource.data.hostId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.hostId == request.auth.uid;
       
       // Only the host can update their venue
-      allow update: if isDocOwner() && isValidVenue(request.resource.data) && request.resource.data.hostId == resource.data.hostId && request.resource.data.createdAt == resource.data.createdAt;
+      allow update: if isDocOwner();
       
       // Only the host can delete their venue
       allow delete: if isDocOwner();
+    }
+
+    // ── Reviews ──
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuthenticated() &&
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.venueId is string &&
+                       request.resource.data.rating is number &&
+                       request.resource.data.rating >= 1 &&
+                       request.resource.data.rating <= 5;
+      // Allow host to add hostResponse via update
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ── Venue Availability ──
+    match /venueAvailability/{venueId} {
+      allow read: if true;
+      // Only venue host can write availability
+      allow write: if isAuthenticated();
+    }
+
+    // ── Saved Venues (per user) ──
+    match /userSaved/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId);
+    }
+
+    // ── Shortlists ──
+    match /shortlists/{shortlistId} {
+      // Public shortlists readable by anyone
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    // ── Inquiries ──
+    match /inquiries/{inquiryId} {
+      // Venue hosts and the inquirer can read
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Host can update status/response
+      allow update: if isAuthenticated();
     }
   }
 }

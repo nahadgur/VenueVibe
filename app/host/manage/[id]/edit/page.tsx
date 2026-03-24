@@ -7,6 +7,7 @@ import { Save, ArrowLeft, Loader2, Check, MapPin, Users, PoundSterling, Trash2 }
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AuthGuard from '@/components/AuthGuard';
+import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/firebase';
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -256,6 +257,11 @@ function EditContent() {
             )}
           </button>
         </div>
+      </div>
+
+      {/* Availability calendar */}
+      <div className="mt-8">
+        <AvailabilityCalendar venueId={venueId} mode="host" />
       </div>
     </div>
   );

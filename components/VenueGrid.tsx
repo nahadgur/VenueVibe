@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react';
 import VenueCard from './VenueCard';
-import type { Venue } from '@/hooks/useVenues';
+import type { Venue } from '@/lib/types';
 
 interface VenueGridProps {
   venues: Venue[];

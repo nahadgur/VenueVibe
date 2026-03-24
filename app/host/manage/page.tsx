@@ -10,7 +10,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/firebase';
 import { collection, getDocs, query, where, orderBy, deleteDoc, doc } from 'firebase/firestore';
-import type { Venue } from '@/hooks/useVenues';
+import type { Venue } from '@/lib/types';
 
 function HostContent() {
   const { user } = useAuth();

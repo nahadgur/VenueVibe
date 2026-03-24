@@ -2,6 +2,7 @@ import type {Metadata, Viewport} from 'next';
 import { DM_Sans } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/AuthProvider';
+import { SavedVenuesProvider } from '@/components/SavedVenuesProvider';
 import CookieBanner from '@/components/CookieBanner';
 
 const dmSans = DM_Sans({
@@ -28,8 +29,10 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     <html lang="en" className={dmSans.variable}>
       <body className="font-sans antialiased bg-[#F5F0EA] text-[#2C2418]" suppressHydrationWarning>
         <AuthProvider>
-          {children}
-          <CookieBanner />
+          <SavedVenuesProvider>
+            {children}
+            <CookieBanner />
+          </SavedVenuesProvider>
         </AuthProvider>
       </body>
     </html>

@@ -3,11 +3,15 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, MessageSquare, Calendar, ArrowRight, Clock, Star, MapPin, Loader2, Building } from 'lucide-react';
+import { Heart, MessageSquare, Calendar, ArrowRight, Clock, Star, MapPin, Loader2, Building, Share2, BarChart3 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AuthGuard from '@/components/AuthGuard';
 import { useAuth } from '@/components/AuthProvider';
+import { useSavedVenues } from '@/components/SavedVenuesProvider';
+import CompareVenues from '@/components/CompareVenues';
+import VenueCard from '@/components/VenueCard';
+import { useVenues } from '@/hooks/useVenues';
 import { db } from '@/firebase';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
@@ -27,6 +31,9 @@ function DashboardContent() {
   const [activeTab, setActiveTab] = useState<'inquiries' | 'reviews' | 'saved'>('inquiries');
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { savedVenues, toggleSave, isSaved, createShortlist } = useSavedVenues();
+  const { venues: allVenues } = useVenues();
+  const [showCompare, setShowCompare] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -163,14 +170,50 @@ function DashboardContent() {
       )}
 
       {activeTab === 'saved' && (
-        <div className="bg-white border border-[#E0D5C5] rounded-xl p-8 text-center">
-          <Heart className="w-10 h-10 text-[#E0D5C5] mx-auto mb-4" />
-          <h3 className="text-[16px] font-[Georgia,serif] text-[#2C2418] mb-2">No saved venues</h3>
-          <p className="text-[14px] text-[#8C7B66] font-light mb-6">Tap the heart icon on any venue to save it for later.</p>
-          <Link href="/venues" className="inline-flex items-center gap-2 text-[13px] text-[#D4654A] font-light hover:underline">
-            Explore venues <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        savedVenues.length > 0 ? (
+          <div className="space-y-6">
+            {/* Actions bar */}
+            <div className="flex items-center justify-between">
+              <p className="text-[13px] text-[#A69580] font-light">{savedVenues.length} saved venue{savedVenues.length !== 1 ? 's' : ''}</p>
+              {savedVenues.length >= 2 && (
+                <button onClick={() => setShowCompare(!showCompare)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-light transition-all ${showCompare ? 'bg-[#2C2418] text-[#F5F0EA]' : 'border border-[#E0D5C5] text-[#5C4E3C] hover:border-[#C4AE8F]'}`}>
+                  <BarChart3 className="w-3.5 h-3.5" />{showCompare ? 'Hide comparison' : 'Compare venues'}
+                </button>
+              )}
+            </div>
+
+            {/* Compare table */}
+            {showCompare && savedVenues.length >= 2 && (
+              <CompareVenues venues={allVenues} />
+            )}
+
+            {/* Venue cards grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {savedVenues.map(sv => {
+                const venue = allVenues.find(v => v.id === sv.venueId);
+                if (!venue) return null;
+                return (
+                  <VenueCard
+                    key={venue.id}
+                    {...venue}
+                    isSavedExternal={true}
+                    onToggleSave={toggleSave}
+                    priority={false}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="bg-white border border-[#E0D5C5] rounded-xl p-8 text-center">
+            <Heart className="w-10 h-10 text-[#E0D5C5] mx-auto mb-4" />
+            <h3 className="text-[16px] font-[Georgia,serif] text-[#2C2418] mb-2">No saved venues</h3>
+            <p className="text-[14px] text-[#8C7B66] font-light mb-6">Tap the heart icon on any venue to save it for later.</p>
+            <Link href="/venues" className="inline-flex items-center gap-2 text-[13px] text-[#D4654A] font-light hover:underline">
+              Explore venues <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )
       )}
     </div>
   );

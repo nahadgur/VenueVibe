@@ -47,25 +47,25 @@ export const EVENT_TYPES: EventType[] = [
   {
     name: 'Corporate Events',
     slug: 'corporate-events',
-    description: 'Boardrooms, conference halls, and executive spaces for impactful corporate gatherings.',
+    description: 'Boardrooms, conference halls, and executive spaces for impactful corporate gatherings, team days, and client entertainment.',
     icon: 'Briefcase',
   },
   {
     name: 'Weddings',
     slug: 'weddings',
-    description: 'Romantic and elegant venues to celebrate your special day.',
+    description: 'Romantic and elegant venues to celebrate your special day — from intimate ceremonies to grand receptions.',
     icon: 'Heart',
   },
   {
     name: 'Photo Shoots',
     slug: 'photo-shoots',
-    description: 'Studios and unique backdrops perfect for editorial and commercial photography.',
+    description: 'Studios and unique backdrops perfect for editorial, commercial, and portrait photography.',
     icon: 'Camera',
   },
   {
     name: 'Product Launches',
     slug: 'product-launches',
-    description: 'Showstopping spaces designed to make your new product unforgettable.',
+    description: 'Showstopping spaces designed to make your brand moment unforgettable.',
     icon: 'Rocket',
   },
   {
@@ -77,20 +77,68 @@ export const EVENT_TYPES: EventType[] = [
   {
     name: 'Private Dining',
     slug: 'private-dining',
-    description: 'Intimate dining rooms and chef\'s tables for exclusive culinary experiences.',
+    description: 'Intimate dining rooms and chef\'s tables for exclusive culinary experiences and celebrations.',
     icon: 'UtensilsCrossed',
   },
   {
     name: 'Workshops',
     slug: 'workshops',
-    description: 'Creative and collaborative spaces for hands-on learning and team building.',
+    description: 'Creative and collaborative spaces for hands-on learning, team building, and masterclasses.',
     icon: 'Lightbulb',
   },
   {
     name: 'Conferences',
     slug: 'conferences',
-    description: 'Large-scale venues with staging, AV, and breakout rooms for industry events.',
+    description: 'Large-scale venues with staging, AV, and breakout rooms for industry events and summits.',
     icon: 'Mic',
+  },
+  {
+    name: 'Birthday Parties',
+    slug: 'birthday-parties',
+    description: 'From cocktail bars to private function rooms — spaces that make birthdays memorable.',
+    icon: 'Cake',
+  },
+  {
+    name: 'Film & TV Production',
+    slug: 'film-tv-production',
+    description: 'Location hire for film, TV, and video production — from period houses to blank canvas studios.',
+    icon: 'Clapperboard',
+  },
+  {
+    name: 'Team Offsites',
+    slug: 'team-offsites',
+    description: 'Inspiring spaces away from the office for strategy days, planning sessions, and team bonding.',
+    icon: 'Mountain',
+  },
+  {
+    name: 'Baby Showers',
+    slug: 'baby-showers',
+    description: 'Charming and comfortable venues for celebrating new arrivals with family and friends.',
+    icon: 'Baby',
+  },
+  {
+    name: 'Engagement Parties',
+    slug: 'engagement-parties',
+    description: 'Stylish spaces to toast the happy couple — from rooftop bars to garden marquees.',
+    icon: 'Gem',
+  },
+  {
+    name: 'Christmas Parties',
+    slug: 'christmas-parties',
+    description: 'Festive venues for end-of-year celebrations, office parties, and seasonal gatherings.',
+    icon: 'Gift',
+  },
+  {
+    name: 'Networking Events',
+    slug: 'networking-events',
+    description: 'Professional venues with the right atmosphere for making connections and building relationships.',
+    icon: 'Handshake',
+  },
+  {
+    name: 'Pop-ups & Markets',
+    slug: 'pop-ups-markets',
+    description: 'Short-term hire spaces for pop-up shops, food markets, and brand activations.',
+    icon: 'Store',
   },
 ];
 

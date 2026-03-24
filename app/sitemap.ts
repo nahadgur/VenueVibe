@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getAllCitySlugs, getAllCityEventCombinations, EVENT_TYPES } from '@/lib/locations';
+import { VENUE_TYPES } from '@/lib/types';
 import { getAllIntentSlugs } from '@/lib/intent-pages';
 import { getAllBlogSlugs } from '@/lib/blog';
 import { getVenues } from '@/lib/venues-server';
@@ -62,11 +63,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
+  // Venue type pages
+  const venueTypePages: MetadataRoute.Sitemap = VENUE_TYPES.map((vt) => ({
+    url: `${BASE_URL}/venue-types/${vt.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+
   // Individual venue pages
   const venues = await getVenues();
   const venuePages: MetadataRoute.Sitemap = venues.map((v) => ({
     url: `${BASE_URL}/venue/${v.id}`,
-    lastModified: v.createdAt || now,
+    lastModified: v.updatedAt || v.createdAt || now,
     changeFrequency: 'weekly' as const,
     priority: 0.7,
   }));
@@ -76,6 +85,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...cityPages,
     ...comboPages,
     ...collectionPages,
+    ...venueTypePages,
     ...intentPages,
     ...blogPages,
     ...venuePages,
