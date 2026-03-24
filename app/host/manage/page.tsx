@@ -92,10 +92,10 @@ function HostContent() {
       ) : venues.length > 0 ? (
         <div className="space-y-4">
           {venues.map((venue) => (
-            <div key={venue.id} className="bg-white border border-[#E0D5C5] rounded-xl overflow-hidden hover:border-[#C4AE8F] transition-colors">
+            <div key={venue.id} className="bg-white border border-[#E0D5C5] rounded-xl hover:border-[#C4AE8F] transition-colors">
               <div className="flex flex-col sm:flex-row">
                 {/* Image */}
-                <div className="relative w-full sm:w-48 h-40 sm:h-auto shrink-0">
+                <div className="relative w-full sm:w-48 h-40 sm:h-auto shrink-0 overflow-hidden rounded-t-xl sm:rounded-l-xl sm:rounded-tr-none">
                   <Image
                     src={venue.imageUrl}
                     alt={venue.title}
@@ -137,7 +137,9 @@ function HostContent() {
                         <MoreVertical className="w-4 h-4" />
                       </button>
                       {menuOpen === venue.id && (
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-[#E0D5C5] rounded-lg shadow-sm z-20 overflow-hidden">
+                        <>
+                          <div className="fixed inset-0 z-20" onClick={() => setMenuOpen(null)} />
+                          <div className="absolute right-0 bottom-full mb-1 w-40 bg-white border border-[#E0D5C5] rounded-lg shadow-lg z-30 overflow-hidden">
                           <Link
                             href={`/host/manage/${venue.id}/edit`}
                             onClick={() => setMenuOpen(null)}
@@ -152,6 +154,7 @@ function HostContent() {
                             <Trash2 className="w-3.5 h-3.5" />Delete listing
                           </button>
                         </div>
+                        </>
                       )}
                     </div>
                   </div>
