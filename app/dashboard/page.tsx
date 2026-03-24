@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, MessageSquare, Calendar, ArrowRight, Clock, Star, MapPin, Loader2, Building, Share2, BarChart3 } from 'lucide-react';
+import { Heart, MessageSquare, Calendar, ArrowRight, Clock, Star, MapPin, Loader2, Building, Share2, BarChart3, Tag, Users, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AuthGuard from '@/components/AuthGuard';
@@ -14,21 +14,12 @@ import VenueCard from '@/components/VenueCard';
 import { useVenues } from '@/hooks/useVenues';
 import { db } from '@/firebase';
 import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
-
-interface Inquiry {
-  id: string;
-  venueId: string;
-  venueTitle?: string;
-  date: string;
-  guests: string;
-  message: string;
-  createdAt: string;
-  status: 'pending' | 'confirmed' | 'declined';
-}
+import type { Inquiry } from '@/lib/types';
 
 function DashboardContent() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'inquiries' | 'reviews' | 'saved'>('inquiries');
+  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { savedVenues, toggleSave, isSaved, createShortlist } = useSavedVenues();
@@ -37,22 +28,32 @@ function DashboardContent() {
 
   useEffect(() => {
     if (!user) return;
-    const fetchReviews = async () => {
+    const fetchData = async () => {
       try {
-        const q = query(
+        // Fetch sent inquiries
+        const iq = query(
+          collection(db, 'inquiries'),
+          where('userId', '==', user.uid),
+          orderBy('createdAt', 'desc')
+        );
+        const iSnap = await getDocs(iq);
+        setInquiries(iSnap.docs.map((d) => ({ id: d.id, ...d.data() } as Inquiry)));
+
+        // Fetch reviews
+        const rq = query(
           collection(db, 'reviews'),
           where('userId', '==', user.uid),
           orderBy('createdAt', 'desc')
         );
-        const snapshot = await getDocs(q);
-        setReviews(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        const rSnap = await getDocs(rq);
+        setReviews(rSnap.docs.map((d) => ({ id: d.id, ...d.data() })));
       } catch (error) {
-        console.error('Error fetching reviews:', error);
+        console.error('Error fetching dashboard data:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchReviews();
+    fetchData();
   }, [user]);
 
   const tabs = [
@@ -129,14 +130,72 @@ function DashboardContent() {
 
       {/* Tab content */}
       {activeTab === 'inquiries' && (
-        <div className="bg-white border border-[#E0D5C5] rounded-xl p-8 text-center">
-          <MessageSquare className="w-10 h-10 text-[#E0D5C5] mx-auto mb-4" />
-          <h3 className="text-[16px] font-[Georgia,serif] text-[#2C2418] mb-2">No inquiries yet</h3>
-          <p className="text-[14px] text-[#8C7B66] font-light mb-6">When you inquire about a venue, it will appear here.</p>
-          <Link href="/venues" className="inline-flex items-center gap-2 text-[13px] text-[#D4654A] font-light hover:underline">
-            Browse venues <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
+        loading ? (
+          <div className="flex justify-center py-16"><Loader2 className="w-6 h-6 text-[#C4AE8F] animate-spin" /></div>
+        ) : inquiries.length > 0 ? (
+          <div className="space-y-4">
+            {inquiries.map((inq) => {
+              const statusConfig = {
+                pending: { icon: AlertCircle, label: 'Pending', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+                responded: { icon: MessageSquare, label: 'Responded', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+                confirmed: { icon: CheckCircle, label: 'Confirmed', bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' },
+                declined: { icon: XCircle, label: 'Declined', bg: 'bg-red-50', text: 'text-red-500', border: 'border-red-200' },
+                expired: { icon: Clock, label: 'Expired', bg: 'bg-gray-50', text: 'text-gray-500', border: 'border-gray-200' },
+              };
+              const sc = statusConfig[inq.status] || statusConfig.pending;
+
+              return (
+                <div key={inq.id} className="bg-white border border-[#E0D5C5] rounded-xl p-5 sm:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+                    <div className="min-w-0">
+                      <Link href={`/venue/${inq.venueId}`} className="text-[15px] font-[Georgia,serif] text-[#2C2418] hover:text-[#D4654A] transition-colors">
+                        {inq.venueTitle || 'Venue'}
+                      </Link>
+                      <p className="text-[12px] text-[#C4AE8F] font-light mt-0.5">
+                        Sent {new Date(inq.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium ${sc.bg} ${sc.text} border ${sc.border} shrink-0`}>
+                      <sc.icon className="w-3 h-3" />{sc.label}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 text-[13px] text-[#8C7B66] font-light mb-3">
+                    <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#A69580]" />{new Date(inq.eventDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                    {inq.guestCount && <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-[#A69580]" />{inq.guestCount} guests</span>}
+                    {inq.eventType && <span className="flex items-center gap-1.5"><Tag className="w-3.5 h-3.5 text-[#A69580]" />{inq.eventType}</span>}
+                  </div>
+
+                  {inq.message && (
+                    <p className="text-[13px] text-[#5C4E3C] font-light leading-relaxed mb-3 line-clamp-2">{inq.message}</p>
+                  )}
+
+                  {/* Host response */}
+                  {inq.hostResponse && (
+                    <div className="mt-3 ml-4 pl-4 border-l-2 border-[#D4654A]/20">
+                      <p className="text-[11px] text-[#D4654A] font-medium mb-1">Host response</p>
+                      <p className="text-[13px] text-[#5C4E3C] font-light leading-relaxed">{inq.hostResponse}</p>
+                      {inq.hostRespondedAt && (
+                        <p className="text-[10px] text-[#C4AE8F] font-light mt-1">
+                          {new Date(inq.hostRespondedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="bg-white border border-[#E0D5C5] rounded-xl p-8 text-center">
+            <MessageSquare className="w-10 h-10 text-[#E0D5C5] mx-auto mb-4" />
+            <h3 className="text-[16px] font-[Georgia,serif] text-[#2C2418] mb-2">No inquiries yet</h3>
+            <p className="text-[14px] text-[#8C7B66] font-light mb-6">When you inquire about a venue, it will appear here.</p>
+            <Link href="/venues" className="inline-flex items-center gap-2 text-[13px] text-[#D4654A] font-light hover:underline">
+              Browse venues <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )
       )}
 
       {activeTab === 'reviews' && (

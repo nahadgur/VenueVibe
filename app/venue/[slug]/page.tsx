@@ -268,6 +268,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                 venueTitle={venue.title}
                 venueId={venue.id}
                 pricePerHour={venue.price}
+                hostId={venue.hostId}
               />
 
               {/* Trust stack */}

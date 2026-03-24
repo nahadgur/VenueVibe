@@ -252,6 +252,8 @@ export interface Inquiry {
   id: string;
   venueId: string;
   venueTitle: string;
+  hostId: string;
+  hostName?: string;
   userId: string;
   userName: string;
   userEmail: string;
