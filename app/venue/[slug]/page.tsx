@@ -11,6 +11,7 @@ import MobileCTA from '@/components/MobileCTA';
 import Reviews from '@/components/Reviews';
 import AvailabilityCalendar from '@/components/AvailabilityCalendar';
 import EventTypeDetails from '@/components/EventTypeDetails';
+import SimilarVenues from '@/components/SimilarVenues';
 import { getVenueById, getVenues } from '@/lib/venues-server';
 import { generateVenueSchema } from '@/lib/schema';
 import { formatPrice, formatResponseTime, CANCELLATION_DESCRIPTIONS, VENUE_TYPES } from '@/lib/types';
@@ -48,6 +49,8 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
   const { slug } = await params;
   const venue = await getVenueById(slug);
   if (!venue) notFound();
+
+  const allVenues = await getVenues();
 
   const crumbs = [
     { label: 'Home', href: '/' },
@@ -263,6 +266,9 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
 
             {/* Reviews */}
             <Reviews venueId={venue.id} hostId={venue.hostId} />
+
+            {/* Similar venues */}
+            <SimilarVenues currentVenue={venue} allVenues={allVenues} />
           </div>
 
           {/* ── Right: Sticky Inquiry ── */}
