@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Star, User, Loader2, ThumbsUp, ThumbsDown, MessageSquare, Filter } from 'lucide-react';
+import { Star, User, Loader2, ThumbsUp, ThumbsDown, MessageSquare, Filter, Send } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { db } from '@/firebase';
 import { collection, addDoc, getDocs, query, where, orderBy, doc, updateDoc } from 'firebase/firestore';
@@ -103,28 +103,19 @@ function ReviewForm({ venueId, onSubmitted }: { venueId: string; onSubmitted: ()
           <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="What did you love? Any tips for future guests?" rows={4} className="w-full bg-[#F8F4EE] border border-[#E0D5C5] rounded-lg p-4 text-[#2C2418] placeholder-[#C4AE8F] focus:outline-none focus:border-[#D4654A] transition-colors resize-none text-[14px] font-light" />
         </div>
 
-        {/* Quick questions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-[#F8F4EE] rounded-lg">
           <div>
             <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Was the venue as pictured?</label>
             <div className="flex gap-2">
-              <button onClick={() => setWasAsPictured(true)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wasAsPictured === true ? 'bg-green-600 text-white border-green-600' : 'text-[#8C7B66] border-[#E0D5C5]'}`}>
-                <ThumbsUp className="w-3 h-3" />Yes
-              </button>
-              <button onClick={() => setWasAsPictured(false)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wasAsPictured === false ? 'bg-red-500 text-white border-red-500' : 'text-[#8C7B66] border-[#E0D5C5]'}`}>
-                <ThumbsDown className="w-3 h-3" />No
-              </button>
+              <button onClick={() => setWasAsPictured(true)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wasAsPictured === true ? 'bg-green-600 text-white border-green-600' : 'text-[#8C7B66] border-[#E0D5C5]'}`}><ThumbsUp className="w-3 h-3" />Yes</button>
+              <button onClick={() => setWasAsPictured(false)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wasAsPictured === false ? 'bg-red-500 text-white border-red-500' : 'text-[#8C7B66] border-[#E0D5C5]'}`}><ThumbsDown className="w-3 h-3" />No</button>
             </div>
           </div>
           <div>
             <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Would you recommend?</label>
             <div className="flex gap-2">
-              <button onClick={() => setWouldRecommend(true)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wouldRecommend === true ? 'bg-green-600 text-white border-green-600' : 'text-[#8C7B66] border-[#E0D5C5]'}`}>
-                <ThumbsUp className="w-3 h-3" />Yes
-              </button>
-              <button onClick={() => setWouldRecommend(false)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wouldRecommend === false ? 'bg-red-500 text-white border-red-500' : 'text-[#8C7B66] border-[#E0D5C5]'}`}>
-                <ThumbsDown className="w-3 h-3" />No
-              </button>
+              <button onClick={() => setWouldRecommend(true)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wouldRecommend === true ? 'bg-green-600 text-white border-green-600' : 'text-[#8C7B66] border-[#E0D5C5]'}`}><ThumbsUp className="w-3 h-3" />Yes</button>
+              <button onClick={() => setWouldRecommend(false)} className={`flex items-center gap-1.5 px-4 py-2 rounded-lg border text-[12px] font-light transition-all ${wouldRecommend === false ? 'bg-red-500 text-white border-red-500' : 'text-[#8C7B66] border-[#E0D5C5]'}`}><ThumbsDown className="w-3 h-3" />No</button>
             </div>
           </div>
         </div>
@@ -145,7 +136,31 @@ function ReviewForm({ venueId, onSubmitted }: { venueId: string; onSubmitted: ()
 
 // ── Single Review Card ──
 
-function ReviewCard({ review }: { review: Review }) {
+function ReviewCard({ review, isHost, onResponseSent }: { review: Review; isHost: boolean; onResponseSent: () => void }) {
+  const [replying, setReplying] = useState(false);
+  const [replyText, setReplyText] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const handleSendReply = async () => {
+    if (!replyText.trim()) return;
+    setSending(true);
+    try {
+      const now = new Date().toISOString();
+      await updateDoc(doc(db, 'reviews', review.id), {
+        hostResponse: replyText.trim(),
+        hostRespondedAt: now,
+      });
+      setReplying(false);
+      setReplyText('');
+      onResponseSent();
+    } catch (err) {
+      console.error('Error saving host response:', err);
+      alert('Failed to save response.');
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <div className="bg-white border border-[#E0D5C5] rounded-xl p-6">
       <div className="flex items-start gap-4 mb-4">
@@ -162,7 +177,6 @@ function ReviewCard({ review }: { review: Review }) {
             </span>
           </div>
 
-          {/* Rating + tags */}
           <div className="flex items-center gap-3 mb-3 flex-wrap">
             <div className="flex gap-0.5">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -183,7 +197,6 @@ function ReviewCard({ review }: { review: Review }) {
           {review.title && <h4 className="text-[14px] font-medium text-[#2C2418] mb-2">{review.title}</h4>}
           <p className="text-[14px] text-[#5C4E3C] font-light leading-relaxed">{review.body}</p>
 
-          {/* Quick verdict badges */}
           {(review.wasAsPictured !== undefined || review.wouldRecommend !== undefined) && (
             <div className="flex gap-3 mt-3">
               {review.wasAsPictured !== undefined && (
@@ -201,7 +214,7 @@ function ReviewCard({ review }: { review: Review }) {
             </div>
           )}
 
-          {/* Host response */}
+          {/* Existing host response */}
           {review.hostResponse && (
             <div className="mt-4 ml-4 pl-4 border-l-2 border-[#D4654A]/20">
               <p className="text-[11px] text-[#D4654A] font-medium mb-1 flex items-center gap-1">
@@ -215,6 +228,46 @@ function ReviewCard({ review }: { review: Review }) {
               )}
             </div>
           )}
+
+          {/* Host reply button — only if host, no existing response */}
+          {isHost && !review.hostResponse && !replying && (
+            <button
+              onClick={() => setReplying(true)}
+              className="mt-4 flex items-center gap-1.5 text-[12px] text-[#D4654A] font-light hover:underline"
+            >
+              <MessageSquare className="w-3 h-3" />Reply to this review
+            </button>
+          )}
+
+          {/* Reply form */}
+          {replying && (
+            <div className="mt-4 space-y-3">
+              <textarea
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                placeholder="Thank the reviewer, address feedback, or add helpful context for future guests..."
+                rows={3}
+                autoFocus
+                className="w-full bg-[#F8F4EE] border border-[#E0D5C5] rounded-lg p-4 text-[#2C2418] placeholder-[#C4AE8F] text-[13px] font-light focus:outline-none focus:border-[#D4654A] transition-colors resize-none"
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSendReply}
+                  disabled={sending || !replyText.trim()}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-[#D4654A] text-white text-[12px] font-medium rounded-lg hover:bg-[#C05A42] transition-colors disabled:opacity-50"
+                >
+                  {sending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                  {sending ? 'Sending...' : 'Post response'}
+                </button>
+                <button
+                  onClick={() => { setReplying(false); setReplyText(''); }}
+                  className="px-3 py-2 text-[12px] text-[#8C7B66] font-light hover:text-[#2C2418] transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -223,11 +276,14 @@ function ReviewCard({ review }: { review: Review }) {
 
 // ── Main Reviews Section ──
 
-export default function Reviews({ venueId }: { venueId: string }) {
+export default function Reviews({ venueId, hostId }: { venueId: string; hostId?: string }) {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
   const [filterEventType, setFilterEventType] = useState<string>('');
+
+  const isHost = !!(user && hostId && user.uid === hostId);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -247,7 +303,6 @@ export default function Reviews({ venueId }: { venueId: string }) {
   const recommendPct = reviews.filter(r => r.wouldRecommend !== undefined).length > 0
     ? Math.round((reviews.filter(r => r.wouldRecommend === true).length / reviews.filter(r => r.wouldRecommend !== undefined).length) * 100) : null;
 
-  // Get unique event types from reviews for filter
   const eventTypes = [...new Set(reviews.map(r => r.eventType).filter(Boolean))] as string[];
   const filteredReviews = filterEventType ? reviews.filter(r => r.eventType === filterEventType) : reviews;
 
@@ -273,7 +328,6 @@ export default function Reviews({ venueId }: { venueId: string }) {
           )}
         </div>
 
-        {/* Event type filter */}
         {eventTypes.length > 1 && (
           <div className="flex items-center gap-2 overflow-x-auto">
             <Filter className="w-3.5 h-3.5 text-[#A69580] shrink-0" />
@@ -292,7 +346,9 @@ export default function Reviews({ venueId }: { venueId: string }) {
           <ReviewForm venueId={venueId} onSubmitted={() => setRefreshKey(k => k + 1)} />
           {filteredReviews.length > 0 ? (
             <div className="space-y-4">
-              {filteredReviews.map((review) => <ReviewCard key={review.id} review={review} />)}
+              {filteredReviews.map((review) => (
+                <ReviewCard key={review.id} review={review} isHost={isHost} onResponseSent={() => setRefreshKey(k => k + 1)} />
+              ))}
             </div>
           ) : reviews.length > 0 ? (
             <p className="text-center py-8 text-[#8C7B66] text-[14px] font-light">No reviews for this event type yet.</p>

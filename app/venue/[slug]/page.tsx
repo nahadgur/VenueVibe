@@ -10,6 +10,7 @@ import InquiryForm from '@/components/InquiryForm';
 import MobileCTA from '@/components/MobileCTA';
 import Reviews from '@/components/Reviews';
 import AvailabilityCalendar from '@/components/AvailabilityCalendar';
+import EventTypeDetails from '@/components/EventTypeDetails';
 import { getVenueById, getVenues } from '@/lib/venues-server';
 import { generateVenueSchema } from '@/lib/schema';
 import { formatPrice, formatResponseTime, CANCELLATION_DESCRIPTIONS, VENUE_TYPES } from '@/lib/types';
@@ -216,6 +217,9 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
               </section>
             )}
 
+            {/* Event-type-specific details */}
+            <EventTypeDetails venue={venue} />
+
             {/* Key details */}
             <section className="mb-10 bg-white border border-[#E0D5C5] rounded-xl p-6">
               <h2 className="text-[16px] font-[Georgia,serif] font-normal text-[#2C2418] mb-4">Key details</h2>
@@ -258,7 +262,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
             </section>
 
             {/* Reviews */}
-            <Reviews venueId={venue.id} />
+            <Reviews venueId={venue.id} hostId={venue.hostId} />
           </div>
 
           {/* ── Right: Sticky Inquiry ── */}

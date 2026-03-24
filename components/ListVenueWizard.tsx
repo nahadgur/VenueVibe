@@ -12,7 +12,7 @@ import {
 } from '@/lib/types';
 import { EVENT_TYPES } from '@/lib/locations';
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 const PRICING_MODELS: { value: PricingModel; label: string }[] = [
   { value: 'hourly', label: 'Per hour' },
@@ -28,6 +28,11 @@ const CANCELLATION_OPTIONS: { value: CancellationPolicy; label: string; desc: st
   { value: 'moderate', label: 'Moderate', desc: 'Free cancellation up to 7 days before' },
   { value: 'strict', label: 'Strict', desc: 'Free cancellation up to 14 days before' },
 ];
+
+const DIETARY_OPTIONS = ['Vegetarian', 'Vegan', 'Halal', 'Kosher', 'Gluten-free', 'Dairy-free', 'Nut-free'];
+const MENU_STYLES = ['Set menu', 'A la carte', 'Sharing platters', 'Canapes', 'Bowl food', 'Buffet', 'Tasting menu'];
+const AV_EQUIPMENT = ['Projector', 'Screen / TV', 'Microphone', 'Video conferencing', 'Whiteboard', 'Flipchart', 'PA system'];
+const CATERING_PACKAGES = ['Morning coffee', 'Working lunch', 'Afternoon tea', 'Full day catering', 'Evening canapes'];
 
 interface FormState {
   title: string;
@@ -49,6 +54,39 @@ interface FormState {
   eventTypesSupported: string[];
   imageUrl: string;
   additionalImages: string[];
+  // Wedding
+  weddingCeremonyCapacity: string;
+  weddingConfetti: boolean;
+  weddingOutsideCatering: boolean;
+  weddingLateLicence: string;
+  weddingExclusiveUse: boolean;
+  weddingBridalSuite: boolean;
+  // Corporate
+  corporateAv: string[];
+  corporateWifi: string;
+  corporateBreakoutRooms: string;
+  corporateDelegateRate: string;
+  corporateCateringPackages: string[];
+  corporateInvoicing: boolean;
+  corporatePo: boolean;
+  // Dining
+  diningMenuStyles: string[];
+  diningDietary: string[];
+  diningMinSpend: string;
+  diningCorkage: string;
+  // Party
+  partyDj: boolean;
+  partyEntertainment: boolean;
+  partyCurfew: string;
+  partyLateLicence: boolean;
+  partyAge: string;
+  partyDecorations: boolean;
+  // Production
+  productionLoadingBay: boolean;
+  productionVanParking: boolean;
+  productionNaturalLight: string;
+  productionBlackout: boolean;
+  productionNoise: string;
 }
 
 export default function ListVenueWizard() {
@@ -64,6 +102,20 @@ export default function ListVenueWizard() {
     cancellationPolicy: 'flexible',
     amenities: [], vibeTags: [], eventTypesSupported: [],
     imageUrl: '', additionalImages: [],
+    // Wedding
+    weddingCeremonyCapacity: '', weddingConfetti: false, weddingOutsideCatering: false,
+    weddingLateLicence: '', weddingExclusiveUse: false, weddingBridalSuite: false,
+    // Corporate
+    corporateAv: [], corporateWifi: '', corporateBreakoutRooms: '',
+    corporateDelegateRate: '', corporateCateringPackages: [], corporateInvoicing: false, corporatePo: false,
+    // Dining
+    diningMenuStyles: [], diningDietary: [], diningMinSpend: '', diningCorkage: '',
+    // Party
+    partyDj: false, partyEntertainment: false, partyCurfew: '',
+    partyLateLicence: false, partyAge: '', partyDecorations: false,
+    // Production
+    productionLoadingBay: false, productionVanParking: false,
+    productionNaturalLight: '', productionBlackout: false, productionNoise: '',
   });
 
   const update = (field: keyof FormState, value: any) => setFormData(prev => ({ ...prev, [field]: value }));
@@ -92,12 +144,25 @@ export default function ListVenueWizard() {
   const nextStep = () => setStep(s => Math.min(s + 1, TOTAL_STEPS));
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
+  // Detect which event type categories are selected
+  const hasWedding = formData.eventTypesSupported.some(s => ['weddings', 'engagement-parties'].includes(s));
+  const hasCorporate = formData.eventTypesSupported.some(s => ['corporate-events', 'conferences', 'team-offsites', 'networking-events'].includes(s));
+  const hasDining = formData.eventTypesSupported.includes('private-dining');
+  const hasParty = formData.eventTypesSupported.some(s => ['birthday-parties', 'christmas-parties', 'baby-showers'].includes(s));
+  const hasProduction = formData.eventTypesSupported.some(s => ['photo-shoots', 'film-tv-production'].includes(s));
+  const hasEventSpecifics = hasWedding || hasCorporate || hasDining || hasParty || hasProduction;
+
+  // If no event-type-specific data needed, skip step 6
+  const effectiveSteps = hasEventSpecifics ? TOTAL_STEPS : TOTAL_STEPS - 1;
+  const isLastStep = step === effectiveSteps || (step === TOTAL_STEPS - 1 && !hasEventSpecifics);
+
   const handleSubmit = async () => {
     if (!user) return;
     setIsSubmitting(true);
     try {
       const allImages = [formData.imageUrl, ...formData.additionalImages].filter(Boolean);
-      await addDoc(collection(db, 'venues'), {
+
+      const venueData: Record<string, any> = {
         title: formData.title || 'Untitled Venue',
         location: formData.location || 'Unknown Location',
         area: formData.area || '',
@@ -124,7 +189,60 @@ export default function ListVenueWizard() {
         isVerified: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      });
+      };
+
+      // Add event-type-specific data only if relevant
+      if (hasWedding) {
+        venueData.weddingInfo = {
+          ceremonyCapacity: Number(formData.weddingCeremonyCapacity) || null,
+          confettiAllowed: formData.weddingConfetti,
+          outsideCateringAllowed: formData.weddingOutsideCatering,
+          lateLicenceHours: formData.weddingLateLicence || null,
+          exclusiveUse: formData.weddingExclusiveUse,
+          brideGroomSuite: formData.weddingBridalSuite,
+        };
+      }
+      if (hasCorporate) {
+        venueData.corporateInfo = {
+          avEquipment: formData.corporateAv,
+          wifiSpeed: formData.corporateWifi || null,
+          breakoutRooms: Number(formData.corporateBreakoutRooms) || null,
+          delegateRate: Number(formData.corporateDelegateRate) || null,
+          cateringPackages: formData.corporateCateringPackages,
+          invoicingAvailable: formData.corporateInvoicing,
+          poAccepted: formData.corporatePo,
+        };
+      }
+      if (hasDining) {
+        venueData.diningInfo = {
+          menuStyles: formData.diningMenuStyles,
+          dietaryAccommodation: formData.diningDietary,
+          minimumSpend: Number(formData.diningMinSpend) || null,
+          corkageCharge: Number(formData.diningCorkage) || null,
+        };
+      }
+      if (hasParty) {
+        venueData.partyInfo = {
+          djAllowed: formData.partyDj,
+          entertainmentAllowed: formData.partyEntertainment,
+          noiseCurfew: formData.partyCurfew || null,
+          lateLicence: formData.partyLateLicence,
+          ageRestriction: formData.partyAge || null,
+          decorationsAllowed: formData.partyDecorations,
+        };
+      }
+      if (hasProduction) {
+        venueData.productionInfo = {
+          hourlyRate: Number(formData.price) || 0,
+          loadingBay: formData.productionLoadingBay,
+          parkingForVans: formData.productionVanParking,
+          naturalLightHours: formData.productionNaturalLight || null,
+          blackoutCapable: formData.productionBlackout,
+          noiseRestrictions: formData.productionNoise || null,
+        };
+      }
+
+      await addDoc(collection(db, 'venues'), venueData);
       router.push('/venues');
     } catch (error) {
       console.error('Error creating venue:', error);
@@ -143,7 +261,9 @@ export default function ListVenueWizard() {
     );
   }
 
-  const stepLabels = ['Details', 'Type & vibe', 'Pricing', 'Amenities', 'Photos'];
+  const stepLabels = hasEventSpecifics
+    ? ['Details', 'Type & vibe', 'Pricing', 'Amenities', 'Photos', 'Event info']
+    : ['Details', 'Type & vibe', 'Pricing', 'Amenities', 'Photos'];
 
   return (
     <div className="bg-white border border-[#E0D5C5] rounded-xl p-5 sm:p-8 md:p-12 overflow-hidden relative">
@@ -157,7 +277,7 @@ export default function ListVenueWizard() {
           ))}
         </div>
         <div className="h-px bg-[#E0D5C5] w-full relative">
-          <motion.div className="absolute top-0 left-0 h-full bg-[#D4654A]" initial={{ width: '20%' }} animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }} transition={{ duration: 0.6, ease: "easeInOut" }} />
+          <motion.div className="absolute top-0 left-0 h-full bg-[#D4654A]" initial={{ width: '20%' }} animate={{ width: `${(step / effectiveSteps) * 100}%` }} transition={{ duration: 0.6, ease: "easeInOut" }} />
         </div>
       </div>
 
@@ -383,6 +503,171 @@ export default function ListVenueWizard() {
             </motion.div>
           )}
 
+          {/* ── Step 6: Event-type-specific details ── */}
+          {step === 6 && hasEventSpecifics && (
+            <motion.div key="step6" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }} className="space-y-8">
+              <h2 className="text-2xl font-[Georgia,serif] font-normal text-[#2C2418] mb-2">Event-specific details</h2>
+              <p className="text-[14px] text-[#8C7B66] font-light -mt-4">These help planners find exactly the right fit. Only fields for your selected event types are shown.</p>
+
+              {/* Wedding fields */}
+              {hasWedding && (
+                <div className="p-5 bg-[#F8F4EE] rounded-xl space-y-4">
+                  <h3 className="text-[14px] font-medium text-[#2C2418]">Wedding & celebration details</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Ceremony capacity</label>
+                      <input type="number" value={formData.weddingCeremonyCapacity} onChange={e => update('weddingCeremonyCapacity', e.target.value)} placeholder="e.g., 100" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Late licence until</label>
+                      <input type="text" value={formData.weddingLateLicence} onChange={e => update('weddingLateLicence', e.target.value)} placeholder="e.g., 1am" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {([['weddingConfetti', 'Confetti allowed'], ['weddingOutsideCatering', 'Outside catering'], ['weddingExclusiveUse', 'Exclusive use'], ['weddingBridalSuite', 'Bridal suite']] as const).map(([field, label]) => (
+                      <button key={field} onClick={() => update(field, !formData[field])} className={`px-4 py-2 rounded-lg border text-[12px] font-light transition-all flex items-center gap-1.5 ${formData[field] ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                        {formData[field] && <Check className="w-3 h-3" />}{label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Corporate fields */}
+              {hasCorporate && (
+                <div className="p-5 bg-[#F8F4EE] rounded-xl space-y-4">
+                  <h3 className="text-[14px] font-medium text-[#2C2418]">Corporate & meeting details</h3>
+                  <div>
+                    <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">AV equipment available</label>
+                    <div className="flex flex-wrap gap-2">
+                      {AV_EQUIPMENT.map(item => (
+                        <button key={item} onClick={() => toggleInArray('corporateAv', item)} className={`px-3.5 py-2 rounded-lg border text-[12px] font-light transition-all ${formData.corporateAv.includes(item) ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">WiFi speed</label>
+                      <input type="text" value={formData.corporateWifi} onChange={e => update('corporateWifi', e.target.value)} placeholder="e.g., 100Mbps" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Breakout rooms</label>
+                      <input type="number" value={formData.corporateBreakoutRooms} onChange={e => update('corporateBreakoutRooms', e.target.value)} placeholder="e.g., 3" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Delegate rate (£/person)</label>
+                      <input type="number" value={formData.corporateDelegateRate} onChange={e => update('corporateDelegateRate', e.target.value)} placeholder="e.g., 65" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Catering packages</label>
+                    <div className="flex flex-wrap gap-2">
+                      {CATERING_PACKAGES.map(item => (
+                        <button key={item} onClick={() => toggleInArray('corporateCateringPackages', item)} className={`px-3.5 py-2 rounded-lg border text-[12px] font-light transition-all ${formData.corporateCateringPackages.includes(item) ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {([['corporateInvoicing', 'Invoicing available'], ['corporatePo', 'PO numbers accepted']] as const).map(([field, label]) => (
+                      <button key={field} onClick={() => update(field, !formData[field])} className={`px-4 py-2 rounded-lg border text-[12px] font-light transition-all flex items-center gap-1.5 ${formData[field] ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                        {formData[field] && <Check className="w-3 h-3" />}{label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Dining fields */}
+              {hasDining && (
+                <div className="p-5 bg-[#F8F4EE] rounded-xl space-y-4">
+                  <h3 className="text-[14px] font-medium text-[#2C2418]">Private dining details</h3>
+                  <div>
+                    <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Menu styles</label>
+                    <div className="flex flex-wrap gap-2">
+                      {MENU_STYLES.map(item => (
+                        <button key={item} onClick={() => toggleInArray('diningMenuStyles', item)} className={`px-3.5 py-2 rounded-lg border text-[12px] font-light transition-all ${formData.diningMenuStyles.includes(item) ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Dietary accommodation</label>
+                    <div className="flex flex-wrap gap-2">
+                      {DIETARY_OPTIONS.map(item => (
+                        <button key={item} onClick={() => toggleInArray('diningDietary', item)} className={`px-3.5 py-2 rounded-lg border text-[12px] font-light transition-all ${formData.diningDietary.includes(item) ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Minimum spend (£)</label>
+                      <input type="number" value={formData.diningMinSpend} onChange={e => update('diningMinSpend', e.target.value)} placeholder="e.g., 1500" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Corkage charge (£/bottle)</label>
+                      <input type="number" value={formData.diningCorkage} onChange={e => update('diningCorkage', e.target.value)} placeholder="e.g., 25" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Party fields */}
+              {hasParty && (
+                <div className="p-5 bg-[#F8F4EE] rounded-xl space-y-4">
+                  <h3 className="text-[14px] font-medium text-[#2C2418]">Party details</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Noise curfew</label>
+                      <input type="text" value={formData.partyCurfew} onChange={e => update('partyCurfew', e.target.value)} placeholder="e.g., 11pm weekdays, 1am weekends" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Age restriction</label>
+                      <input type="text" value={formData.partyAge} onChange={e => update('partyAge', e.target.value)} placeholder="e.g., 18+, No restriction" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {([['partyDj', 'DJ allowed'], ['partyEntertainment', 'Live entertainment'], ['partyLateLicence', 'Late licence'], ['partyDecorations', 'Own decorations allowed']] as const).map(([field, label]) => (
+                      <button key={field} onClick={() => update(field, !formData[field])} className={`px-4 py-2 rounded-lg border text-[12px] font-light transition-all flex items-center gap-1.5 ${formData[field] ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                        {formData[field] && <Check className="w-3 h-3" />}{label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Production fields */}
+              {hasProduction && (
+                <div className="p-5 bg-[#F8F4EE] rounded-xl space-y-4">
+                  <h3 className="text-[14px] font-medium text-[#2C2418]">Photo / film production details</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Natural light hours</label>
+                      <input type="text" value={formData.productionNaturalLight} onChange={e => update('productionNaturalLight', e.target.value)} placeholder="e.g., Best 10am-3pm, south-facing" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-[#A69580] tracking-[0.1em] mb-2">Noise restrictions</label>
+                      <input type="text" value={formData.productionNoise} onChange={e => update('productionNoise', e.target.value)} placeholder="e.g., No amplified sound after 10pm" className="w-full bg-white border border-[#E0D5C5] rounded-lg px-4 py-2.5 text-[#2C2418] placeholder-[#C4AE8F] text-[14px] font-light focus:outline-none focus:border-[#D4654A] transition-colors" />
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {([['productionLoadingBay', 'Loading bay'], ['productionVanParking', 'Van parking'], ['productionBlackout', 'Blackout capable']] as const).map(([field, label]) => (
+                      <button key={field} onClick={() => update(field, !formData[field])} className={`px-4 py-2 rounded-lg border text-[12px] font-light transition-all flex items-center gap-1.5 ${formData[field] ? 'bg-[#2C2418] text-[#F5F0EA] border-[#2C2418]' : 'bg-white text-[#8C7B66] border-[#E0D5C5]'}`}>
+                        {formData[field] && <Check className="w-3 h-3" />}{label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          )}
+
         </AnimatePresence>
       </div>
 
@@ -391,8 +676,8 @@ export default function ListVenueWizard() {
         <button onClick={prevStep} disabled={step === 1 || isSubmitting} className={`flex items-center gap-2 px-5 py-3 text-[13px] font-light transition-all ${step === 1 ? 'opacity-0 pointer-events-none' : 'text-[#8C7B66] hover:text-[#2C2418]'}`}>
           <ChevronLeft className="w-4 h-4" />Back
         </button>
-        <button onClick={step === TOTAL_STEPS ? handleSubmit : nextStep} disabled={isSubmitting} className="flex items-center gap-2 bg-[#2C2418] text-[#F5F0EA] px-7 py-3.5 text-[13px] font-medium rounded-lg hover:bg-[#3D3226] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : step === TOTAL_STEPS ? 'Submit listing' : <>Next step<ChevronRight className="w-4 h-4" /></>}
+        <button onClick={isLastStep ? handleSubmit : nextStep} disabled={isSubmitting} className="flex items-center gap-2 bg-[#2C2418] text-[#F5F0EA] px-7 py-3.5 text-[13px] font-medium rounded-lg hover:bg-[#3D3226] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : isLastStep ? 'Submit listing' : <>Next step<ChevronRight className="w-4 h-4" /></>}
         </button>
       </div>
     </div>
